@@ -35,5 +35,8 @@
   },
   "homepage": "https://github.com/cb1kenobi/bryt",
   "bugs": "https://github.com/cb1kenobi/bryt/issues",
-  "repository": "https://github.com/cb1kenobi/bryt"
+  "repository": "https://github.com/cb1kenobi/bryt",
+  "engines": {
+    "node": ">=8.0.0"
+  }
 }
