@@ -12,3 +12,5 @@ cache:
 install: yarn
 before_script: sh -c "git log | head -12"
 script: yarn run coverage
+after_success:
+  - coveralls < ./coverage/lcov.info
