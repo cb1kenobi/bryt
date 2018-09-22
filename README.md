@@ -6,7 +6,7 @@ Get colors by brightness.
 [![NPM Downloads][downloads-image]][downloads-url]
 [![Travis CI Build][travis-image]][travis-url]
 [![Test Coverage][coveralls-image]][coveralls-url]
-[![Greenkeeper badge](https://badges.greenkeeper.io/cb1kenobi/bryt.svg)](https://greenkeeper.io/)
+[![Greenkeeper badge][greenkeeper-image]][greenkeeper-url]
 [![Deps][david-image]][david-url]
 [![Dev Deps][david-dev-image]][david-dev-url]
 
@@ -108,6 +108,8 @@ MIT
 [travis-url]: https://travis-ci.org/cb1kenobi/bryt
 [coveralls-image]: https://img.shields.io/coveralls/cb1kenobi/bryt/master.svg
 [coveralls-url]: https://coveralls.io/r/cb1kenobi/bryt
+[greenkeeper-image]: https://badges.greenkeeper.io/cb1kenobi/bryt.svg
+[greenkeeper-url]: https://greenkeeper.io/
 [david-image]: https://img.shields.io/david/cb1kenobi/bryt.svg
 [david-url]: https://david-dm.org/cb1kenobi/bryt
 [david-dev-image]: https://img.shields.io/david/dev/cb1kenobi/bryt.svg
