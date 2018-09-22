@@ -1,5 +1,7 @@
 # bryt
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/cb1kenobi/bryt.svg)](https://greenkeeper.io/)
+
 Get colors by brightness.
 
 [![NPM Version][npm-image]][npm-url]
