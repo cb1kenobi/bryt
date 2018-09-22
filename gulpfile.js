@@ -161,6 +161,7 @@ function runTests(cover) {
 			//   https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-reports/lib
 			'--reporter=html',
 			'--reporter=json',
+			'--reporter=lcov',
 			'--reporter=text',
 			'--reporter=text-summary',
 			'--show-process-tree',
