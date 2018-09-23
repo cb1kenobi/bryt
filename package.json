@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "coverage": "gulp coverage",
-    "prepublish": "gulp build",
+    "prepare": "gulp build",
     "test": "gulp test"
   },
   "dependencies": {
