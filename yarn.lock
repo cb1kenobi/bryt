@@ -134,9 +134,10 @@ ansi-colors@^1.0.1:
   dependencies:
     ansi-wrap "^0.1.0"
 
-ansi-colors@^3.0.6:
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/ansi-colors/-/ansi-colors-3.0.6.tgz#a0b9e00e8c1cc6685b1c3130dbeb9abed03ca6a4"
+ansi-colors@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/ansi-colors/-/ansi-colors-4.0.1.tgz#3dc29301836c6152f617a71466bde162a2e42582"
+  integrity sha512-1Qs1jdXEMSYwcVooLRfnCc5+e3365pw38v4AVkSsCxsjXRGKDTem5VLCl53SpHSpLnEy8O5DofJHZJELaRiJbg==
 
 ansi-cyan@^0.1.1:
   version "0.1.1"
