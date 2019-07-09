@@ -9,22 +9,38 @@ const log         = require('fancy-log');
 const path        = require('path');
 const spawnSync   = require('child_process').spawnSync;
 
+const { parallel, series } = gulp;
+
 const coverageDir = path.join(__dirname, 'coverage');
 const lookupDir   = path.join(__dirname, 'lookup');
 
 /*
  * Clean tasks
  */
-gulp.task('clean', [ 'clean-coverage', 'clean-lookup' ]);
+async function cleanCoverage() { return fs.remove(coverageDir); }
+async function cleanLookup() { return fs.remove(lookupDir); }
+exports.clean = parallel(cleanCoverage, cleanLookup);
 
-gulp.task('clean-coverage', done => fs.remove(coverageDir, done));
-
-gulp.task('clean-lookup', done => fs.remove(lookupDir, done));
+/*
+ * lint tasks
+ */
+function lint(pattern) {
+	return gulp.src(pattern)
+		.pipe($.plumber())
+		.pipe($.eslint())
+		.pipe($.eslint.format())
+		.pipe($.eslint.failAfterError());
+}
+async function lintSrc() { return lint('src/**/*.js'); }
+async function lintTest() { return lint('test/**/test-*.js'); }
+exports['lint-src'] = lintSrc;
+exports['lint-test'] = lintTest;
+exports.lint = parallel(lintSrc, lintTest);
 
 /*
  * build tasks
  */
-gulp.task('build', [ 'clean-lookup', 'lint-src' ], () => {
+const build = series(parallel(cleanLookup, lintSrc), async function build() {
 	const counts = [];
 	const results = {};
 	const start = Date.now();
@@ -33,7 +49,7 @@ gulp.task('build', [ 'clean-lookup', 'lint-src' ], () => {
 	let totalAfter = 0;
 
 	log('Creating lookup directory...');
-	fs.mkdirSync(lookupDir);
+	await fs.mkdirs(lookupDir);
 
 	log('Building lookup...');
 	for (let b = 0; b <= 255; b++) {
@@ -115,31 +131,12 @@ gulp.task('build', [ 'clean-lookup', 'lint-src' ], () => {
 		return `${Math.round((before - after) / before * 1000) / 10}%`;
 	}
 });
-
-/*
- * lint tasks
- */
-function lint(pattern) {
-	return gulp.src(pattern)
-		.pipe($.plumber())
-		.pipe($.eslint())
-		.pipe($.eslint.format())
-		.pipe($.eslint.failAfterError());
-}
-
-gulp.task('lint-src', () => lint('src/**/*.js'));
-
-gulp.task('lint-test', () => lint('test/**/test-*.js'));
+exports.build = exports.default = build;
 
 /*
  * test tasks
  */
-gulp.task('test',          [ 'lint-test' ],                               () => runTests());
-gulp.task('test-only',     [ 'lint-test' ],                               () => runTests());
-gulp.task('coverage',      [ 'clean-coverage', 'lint-src', 'lint-test' ], () => runTests(true));
-gulp.task('coverage-only', [ 'clean-coverage', 'lint-test' ],             () => runTests(true));
-
-function runTests(cover) {
+async function runTests(cover) {
 	const args = [];
 	let { execPath } = process;
 
@@ -161,7 +158,6 @@ function runTests(cover) {
 			//   https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-reports/lib
 			'--reporter=html',
 			'--reporter=json',
-			'--reporter=lcov',
 			'--reporter=text',
 			'--reporter=text-summary',
 			'--show-process-tree',
@@ -194,18 +190,18 @@ function runTests(cover) {
 	// add unit test setup
 	args.push(path.resolve(__dirname, 'test', 'setup.js'));
 
-	args.push('test/**/test-*.js');
+	// add suite
+	p = process.argv.indexOf('--suite');
+	if (p !== -1 && p + 1 < process.argv.length) {
+		args.push.apply(args, process.argv[p + 1].split(',').map(s => 'test/**/test-' + s + '.js'));
+	} else {
+		args.push('test/**/test-*.js');
+	}
 
-	log('Running: ' + ansiColors.cyan(execPath + ' ' + args.join(' ')));
-
-	const env = Object.assign({}, process.env, {
-		FORCE_COLOR: 1,
-		COLORTERM: 'truecolor'
-	});
-	delete env.CI;
+	log(`Running: ${ansiColors.cyan(`${execPath} ${args.join(' ')}`)}`);
 
 	// run!
-	if (spawnSync(execPath, args, { env, stdio: 'inherit' }).status) {
+	if (spawnSync(execPath, args, { stdio: 'inherit' }).status) {
 		const err = new Error('At least one test failed :(');
 		err.showStack = false;
 		throw err;
@@ -229,4 +225,7 @@ function resolveModule(name) {
 	}
 }
 
-gulp.task('default', ['build']);
+exports.test             = series(parallel(lintTest, build),                function test() { return runTests(); });
+exports['test-only']     = exports.test;
+exports.coverage         = series(parallel(cleanCoverage, lintTest), build, function test() { return runTests(true); });
+exports['coverage-only'] = exports.coverage;
