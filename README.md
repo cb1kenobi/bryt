@@ -18,7 +18,7 @@ an integer between `0` and `255`. Some brightnesses have more colors than others
 Determining a color's brightness is a pretty simple calculation, but choosing a color by brightness
 is not. bryt is essentially a giant lookup table that sorts all 16,581,375 colors. Each color is
 represented by a 4-byte integer. The raw data is 66,325,500 bytes. bryt packs this data into only
-3,093,882 bytes.
+3,085,594 bytes.
 
 bryt sorts every color by brightness and stores them in compressed lookup archives. Secondly, since
 colors in a specific range are similar, it stores color ranges instead of every actual color. Each
